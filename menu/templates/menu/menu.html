@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>$(document).ready(function () { $('.add-to-cart').click(function (e) { e.preventDefault(); const dishId = $(this).data('id'); $.ajax({ url: "{% url 'add_to_cart_ajax' %}", method: "POST", data: { 'dish_id': dishId, 'csrfmiddlewaretoken': '{{ csrf_token }}' }, success: function (data) { alert('Додано в кошик'); }, error: function () { alert('Помилка при додаванні до кошика.'); } }); }); }); </script>
+
+<h1>Меню</h1>
+
+<form method="get">
+  <label>Категорія:
+    <select name="category">
+      <option value="">Всі</option>
+      {% for cat in categories %}
+        <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == selected_category %}selected{% endif %}>{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <label>Ціна від: <input type="number" name="min_price" value="{{ min_price }}"></label>
+  <label>до: <input type="number" name="max_price" value="{{ max_price }}"></label>
+
+  <label>Сортувати:
+    <select name="sort_by">
+      <option value="">Без сортування</option>
+      <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Ціна ↑</option>
+      <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Ціна ↓</option>
+    </select>
+  </label>
+
+  <button type="submit">Застосувати</button>
+  <a href="{% url 'menu' %}">Скинути</a>
+</form>
+<hr>
+
+<div style="display: flex;"> 
+  {% for dish in dishes %}
+  <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+    <h2>{{ dish.name }}</h2>
+    {% if dish.image %}
+      <img src="{{ dish.image.url }}" alt="{{ dish.name }}" style="max-width: 200px;"><br>
+    {% endif %}
+    <p>{{ dish.description }}</p>
+    <strong>Ціна: {{ dish.price }} грн</strong><br>
+    <em>Категорія: {{ dish.category.name }}</em>
+    <button class="add-to-cart" data-id="{{ dish.id }}">Додати в кошик</button>
+  </div>
+{% empty %}
+  
+</div>
+
+  <p>Немає страв за заданими фільтрами.</p>
+{% endfor %}
+
+{% endblock %}
