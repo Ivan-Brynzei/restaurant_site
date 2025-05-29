@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block content %}
+
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Головна - Ресторан</title>
+  </head>
+  <body>
+    <h1>Ласкаво просимо до нашого ресторану!</h1>
+    <a href="{% url 'menu' %}">
+      <button>Переглянути меню</button>
+    </a>
+  </body>
+</html>
+
+{% endblock %}
