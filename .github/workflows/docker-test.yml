@@ -14,22 +14,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Compose
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install docker-compose -y
+          pip install -r requirements.txt
 
-      - name: Build and run containers
+      - name: Run tests with pytest
         run: |
-          docker-compose up -d --build
-
-      - name: Wait for services to be ready
-        run: sleep 10
-
-      - name: Run pytest tests
-        run: |
-          docker-compose exec -T web pytest
-
-      - name: Tear down
-        if: always()
-        run: docker-compose down
+          pytest
